@@ -21,9 +21,9 @@ def select_subdataset(x: np.ndarray, y: np.ndarray, classes_to_extract: List[int
     return np.concatenate(selected_x), np.concatenate(selected_y)
 
 
-def dataset_to_tensors(x: np.ndarray, y: np.ndarray, batch_size: int, shuffle: bool = True) -> tf.data.Dataset:
+def dataset_to_tensors(x: np.ndarray, y: np.ndarray, classes_depth: int, batch_size: int, shuffle: bool = True) -> tf.data.Dataset:
     """Convert numpy array to tf.data.Dataset"""
-    ds = tf.data.Dataset.from_tensor_slices((x, y))
+    ds = tf.data.Dataset.from_tensor_slices((x, tf.one_hot(y, classes_depth)))
     if shuffle:
         ds = ds.shuffle(buffer_size=len(y) * 2, seed=10)
 
@@ -33,5 +33,5 @@ def dataset_to_tensors(x: np.ndarray, y: np.ndarray, batch_size: int, shuffle: b
 if __name__ == '__main__':
     (x_train, y_train), (x_test, y_test) = load_mnist()
     x_test_0_3, y_test_0_3 = select_subdataset(x_test, y_test, [0, 1, 2, 3])
-    ds_test_0_3 = dataset_to_tensors(x_test_0_3, y_test_0_3, batch_size=1000, shuffle=True)
+    ds_test_0_3 = dataset_to_tensors(x_test_0_3, y_test_0_3, classes_depth=4, batch_size=1000, shuffle=True)
     print(ds_test_0_3)
