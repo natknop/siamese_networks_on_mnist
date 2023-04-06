@@ -25,6 +25,13 @@ def dataset_to_tensors(x: np.ndarray, y: np.ndarray, batch_size: int, shuffle: b
     """Convert numpy array to tf.data.Dataset"""
     ds = tf.data.Dataset.from_tensor_slices((x, y))
     if shuffle:
-        ds = ds.shuffle(1024, seed=10)
+        ds = ds.shuffle(buffer_size=len(y) * 2, seed=10)
 
     return ds.batch(batch_size).prefetch(tf.data.AUTOTUNE)
+
+
+if __name__ == '__main__':
+    (x_train, y_train), (x_test, y_test) = load_mnist()
+    x_test_0_3, y_test_0_3 = select_subdataset(x_test, y_test, [0, 1, 2, 3])
+    ds_test_0_3 = dataset_to_tensors(x_test_0_3, y_test_0_3, batch_size=1000, shuffle=True)
+    print(ds_test_0_3)
