@@ -6,7 +6,10 @@ import tensorflow as tf
 
 def load_mnist() -> Tuple[Tuple[np.ndarray, np.ndarray], Tuple[np.ndarray, np.ndarray]]:
     """Returns (x_train, y_train), (x_test, y_test) for MNIST dataset"""
-    return tf.keras.datasets.mnist.load_data()
+    (x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data()
+    x_train = np.expand_dims(x_train, axis=-1)
+    x_test = np.expand_dims(x_test, axis=-1)
+    return (x_train, y_train), (x_test, y_test)
 
 
 def select_subdataset(x: np.ndarray, y: np.ndarray, classes_to_extract: List[int]) -> Tuple[np.ndarray, np.ndarray]:
@@ -32,6 +35,7 @@ def dataset_to_tensors(x: np.ndarray, y: np.ndarray, classes_depth: int, batch_s
 
 if __name__ == '__main__':
     (x_train, y_train), (x_test, y_test) = load_mnist()
+
     x_test_0_3, y_test_0_3 = select_subdataset(x_test, y_test, [0, 1, 2, 3])
     ds_test_0_3 = dataset_to_tensors(x_test_0_3, y_test_0_3, classes_depth=4, batch_size=1000, shuffle=True)
     print(ds_test_0_3)
