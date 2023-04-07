@@ -1,0 +1,2 @@
+get_main_conv_block.output_shape = 30
+get_regular_model.output_shape = 10
